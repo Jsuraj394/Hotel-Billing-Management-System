@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hotel Billing System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+{% include 'navbar.html' %}
+
+<body class="bg-light">
+  <div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Add Expense</h1>
+      <a href="/accounts/daily_summary/" class="btn btn-secondary">
+        ← Back to Summary
+      </a>
+    </div>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div class="mb-3">
+        <label for="{{ form.date.id_for_label }}" class="form-label">Date</label>
+        {{ form.date }}
+        {{ form.date.errors }}
+      </div>
+
+      <div class="mb-3">
+        <label for="{{ form.description.id_for_label }}" class="form-label">
+          Description
+        </label>
+        {{ form.description }}
+        {{ form.description.errors }}
+      </div>
+
+      <div class="mb-3">
+        <label for="{{ form.amount.id_for_label }}" class="form-label">
+          Amount (₹)
+        </label>
+        {{ form.amount }}
+        {{ form.amount.errors }}
+      </div>
+
+      <div class="mb-3">
+        <label for="{{ form.payment_mode.id_for_label }}" class="form-label">
+          {{ form.payment_mode.label }}
+        </label>
+        {{ form.payment_mode }}
+        {{ form.payment_mode.errors }}
+      </div>
+
+      <div class="mb-3">
+        <label for="{{ form.owner.id_for_label }}" class="form-label">
+          Owner
+        </label>
+        {{ form.owner }}
+        {{ form.owner.errors }}
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        Save Expense
+      </button>
+    </form>
+  </div>
+
+  <footer class="bg-dark text-white text-center p-3">
+    <p>&copy; 2025 Swad Satva. All rights reserved.</p>
+  </footer>
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  ></script>
+</body>
+
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Billing App – Generate Bill</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    .flash {
+      background-color: #d4edda;
+      transition: background-color 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+  {% include 'navbar.html' %}
+
+  <div class="container py-4">
+    <h2 class="text-center mb-4">Billing Application</h2>
+
+        <div class="mb-3">
+          <label for="tableSelect" class="form-label"><b>Select Table</b></label>
+          <select class="form-select" id="tableSelect" name="table">
+            <option value="1">Table 1</option>
+            <option value="2">Table 2</option>
+            <option value="3">Table 3</option>
+            <option value="3">Table 4</option>
+            <option value="3">Table 5</option>
+            <option value="3">Table 6</option>
+          </select>
+        </div>
+
+
+    <form method="POST" action="/accounts/generate_bill_summary/">
+      {% csrf_token %}
+
+      <!-- Accordion to group by category -->
+      <div class="accordion" id="menuAccordion">
+        {% for category, items in category_items.items %}
+          {% if items %}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="heading-{{ forloop.counter }}">
+              <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapse-{{ forloop.counter }}"
+                aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                aria-controls="collapse-{{ forloop.counter }}"
+              >
+                <h5> <b> {{ category }} </b>  </h5>
+              </button>
+            </h2>
+           <div id="collapse-{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading-{{ forloop.counter }}" data-bs-parent="#menuAccordion">
+            <!-- <div id="collapse-{{ forloop.counter }}" class="accordion-collapse collapse show" aria-labelledby="heading-{{ forloop.counter }}" data-bs-parent="#menuAccordion"> -->
+
+              <div class="accordion-body p-0">
+                <ul class="list-group list-group-flush">
+                  {% for item in items %}
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span> {{ forloop.counter }}.  {{ item.DishName }} — ₹{{ item.price }}</span>
+                    <div class="d-flex align-items-center">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-danger" style="width: 60px;"
+                        onclick="decrease(this)"
+                      >−</button>
+                      <input
+                        type="text"
+                        name="{{ item.sno }}"
+                        data-name="{{ item.DishName }}"
+                        value="0"
+                        class="form-control text-center mx-2"
+                        style="width: 50px;"
+                        readonly
+                      />
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-success"
+                        style="width: 60px;"
+                        onclick="increase(this)"
+                      >+</button>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- Order summary -->
+      <div id="orderSummary" class="mt-4">
+        <h5>🧾 Review Your Order:</h5>
+        
+
+
+
+        <ul class="list-group" id="orderList"></ul>
+        <div class="text-end mt-2">
+          <strong>Total: ₹<span id="grandTotal">0.00</span></strong>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary btn-lg" >
+          🖨️ Print Invoice
+        </button>
+
+      </div>
+    </form>
+  </div>
+
+  <footer class="bg-dark text-white text-center p-3">
+    <p>&copy; 2025 Swad Satva. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function increase(button) {
+      const input = button.parentNode.querySelector('input');
+      input.value = parseInt(input.value || 0) + 1;
+      flashInput(input);
+      updateOrderSummary();
+    }
+
+    function decrease(button) {
+      const input = button.parentNode.querySelector('input');
+      const val = parseInt(input.value || 0);
+      if (val > 0) {
+        input.value = val - 1;
+        flashInput(input);
+        updateOrderSummary();
+      }
+    }
+
+    function flashInput(input) {
+      input.classList.add('flash');
+      setTimeout(() => input.classList.remove('flash'), 300);
+    }
+
+    function removeItem(name) {
+      // find the input by its data-name attribute
+      const input = document.querySelector(`input[data-name="${name}"]`);
+      const val = parseInt(input.value || 0);
+      if (val > 0) {
+        input.value = val - 1;
+        flashInput(input);
+        updateOrderSummary();
+      }
+    }
+
+    function updateOrderSummary() {
+      const inputs    = document.querySelectorAll('input[data-name]');
+      const list      = document.getElementById('orderList');
+      const totalElem = document.getElementById('grandTotal');
+      list.innerHTML  = '';
+      let grandTotal  = 0;
+
+      inputs.forEach(input => {
+        const qty = parseInt(input.value || 0);
+        if (qty > 0) {
+          const dishName = input.dataset.name;
+          const priceTxt = input
+            .closest('li')
+            .querySelector('span')
+            .textContent;
+          const match    = priceTxt.match(/₹(\d+(\.\d+)?)/);
+          const unit     = match ? parseFloat(match[1]) : 0;
+          const lineTotal = unit * qty;
+          grandTotal += lineTotal;
+
+          const li = document.createElement('li');
+          li.className = 'list-group-item d-flex justify-content-between align-items-center';
+          li.innerHTML = `
+            <span>
+              ${dishName} × ${qty}
+              <button
+                class="btn btn-sm btn-outline-danger ms-2"
+                onclick="removeItem('${dishName}')"
+              >−</button>
+            </span>
+            <span>₹${lineTotal.toFixed(2)}</span>
+          `;
+          list.appendChild(li);
+        }
+      });
+
+      if (!list.children.length) {
+        const li = document.createElement('li');
+        li.className = 'list-group-item text-muted';
+        li.textContent = 'No items selected.';
+        list.appendChild(li);
+      }
+
+      totalElem.textContent = grandTotal.toFixed(2);
+    }
+
+    window.addEventListener('DOMContentLoaded', updateOrderSummary);
+  </script>
+
+
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  ></script>
+</body>
+</html>

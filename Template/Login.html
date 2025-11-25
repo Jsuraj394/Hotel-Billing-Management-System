@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <title> Home Page </title>
+</head>
+<body>
+
+
+ {% include 'navbar.html' %}
+
+
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+    <div class="card shadow p-4" style="width: 100%; max-width: 420px;">
+        <h4 class="text-center mb-4">Sign in</h4>
+
+        <form action="/login/" method="POST">
+            {% csrf_token %}
+            {% if error %}
+                <div class="alert alert-danger text-center">{{ error }}</div>
+            {% endif %}
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+
+                <input type="text"  class="form-control" id="username" placeholder="User Name" name="username" required />
+                <label class="form-label" for="username">User Name</label>
+            </div>
+
+            <!-- Password input -->
+            <div class="form-outline mb-3">
+                <input type="password"  class="form-control" id="password" placeholder="Password" name="password" required />
+                <label class="form-label" for="password">Password</label>
+            </div>
+
+            <!-- Checkbox and Forgot Password -->
+            <div class="row mb-4 align-items-center">
+                <div class="col d-flex align-items-center">
+                    <div class="form-check">
+                        <input class="form-check-input me-2" type="checkbox" id="rememberMe" checked />
+                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                    </div>
+                </div>
+                <div class="col text-end">
+                    <a href="#!" class="text-decoration-none">Forgot password?</a>
+                </div>
+            </div>
+
+            <!-- Submit button -->
+            <div class="d-grid align-items-center mb-4">
+                <button type="submit" class="btn btn-primary">Sign in</button>
+            </div>
+
+            <!-- Register prompt -->
+            <div class="text-center mb-3">
+                <p>Not a member? <a href="#!" class="text-decoration-none">Register</a></p>
+                <p class="mb-2">or sign in with:</p>
+            </div>
+
+            <!-- Social buttons -->
+            <div class="text-center">
+                <button type="button" class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-facebook-f"></i>
+                </button>
+                <button type="button" class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-google"></i>
+                </button>
+                <button type="button" class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-twitter"></i>
+                </button>
+                <button type="button" class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-github"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+    <footer class="bg-dark text-white text-center p-3">
+        <p>&copy; 2025 Swad Satva. All rights reserved.</p>
+    </footer>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

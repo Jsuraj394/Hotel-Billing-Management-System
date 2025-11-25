@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Billing App - Bill History</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+</head>
+<body>
+
+  {% include 'navbar.html' %}
+{% block content %}
+<div class="container py-4">
+  <h3 class="mb-4 text-center">✏️ Edit Staff: {{ staff.name }}</h3>
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label>Name</label>
+        <input type="text" name="name" class="form-control" value="{{ staff.name }}" required>
+      </div>
+      <div class="col-md-3">
+        <label>Age</label>
+        <input type="number" name="age" class="form-control" value="{{ staff.age }}" required>
+      </div>
+      <div class="col-md-3">
+        <label>Aadhar Number</label>
+        <input type="text" name="aadhar" class="form-control" value="{{ staff.aadhar_number }}" required maxlength="12">
+      </div>
+      <div class="col-md-8">
+        <label>Address</label>
+        <textarea name="address" class="form-control" rows="2" required>{{ staff.address }}</textarea>
+      </div>
+      <div class="col-md-4">
+        <label>Monthly Salary (₹)</label>
+        <input type="number" step="0.01" name="salary" class="form-control" value="{{ staff.salary }}" required>
+      </div>
+      <div class="col-md-4">
+        <label>Joining Date</label>
+        <input type="date" name="joining_date" class="form-control" value="{{ staff.joining_date }}" required>
+      </div>
+    </div>
+
+    <div class="mt-4 text-end">
+      <button type="submit" class="btn btn-primary">Update</button>
+      <a href="{% url 'staff_management' %}" class="btn btn-secondary ms-2">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+
+  <!-- Bootstrap JS Bundle (includes Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <footer class="bg-dark text-white text-center p-3">
+        <p>&copy; 2025 Swad Satva. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
